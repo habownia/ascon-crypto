@@ -1,0 +1,21 @@
+# Build outputs
+build/
+bin/
+*.o
+*.a
+*.so
+*.dylib
+*.out
+
+# Editor and IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+compile_commands.json
+
+# OS specific
+.DS_Store
+Thumbs.db
+
