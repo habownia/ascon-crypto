@@ -2,15 +2,16 @@
 
 Implementacja lekkiego algorytmu kryptograficznego **Ascon** zgodnie ze standardem **NIST SP 800-232** (*Lightweight Cryptography*), z przeznaczeniem na urządzenia klasy IoT (ESP8266 / ESP32).
 
+
 ---
 
 ## 1. Skład Zespołu i Podział Zadań
 
-Szczegółowy harmonogram prac i macierz ról:  
-[docs/schedule.md](docs/schedule.md)
+Skład zespołu: **Wojciech Aleksander**, **Jakub Duliban**, **Hubert Krzyżak**
 
-Szczegółowe założenia architektoniczne i kryptograficzne:  
-[docs/assumptions.md](docs/assumptions.md)
+[Harmonogram: docs/schedule.md](docs/schedule.md)
+
+[Założenia: docs/assumptions.md](docs/assumptions.md)
 
 ---
 
