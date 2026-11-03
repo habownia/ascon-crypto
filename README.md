@@ -19,31 +19,54 @@ Skład zespołu: **Wojciech Aleksander**, **Jakub Duliban**, **Hubert Krzyżak**
 
 ```text
 ascon-crypto/
-├── docs/           # Założenia projektowe i harmonogram prac
+├── docs/           # Założenia projektowe, harmonogram i specyfikacja NIST SP 800-232
+│   ├── NIST.SP.800-232.pdf
 │   ├── assumptions.md
 │   └── schedule.md
-├── include/        # Pliki nagłówkowe biblioteki (.h)
-├── src/            # Pliki źródłowe implementacji (.c)
-├── tests/          # Testy jednostkowe i wektory testowe NIST
-├── Makefile        # Główny skrypt budowania projektu na PC
+├── include/        # Pliki nagłówkowe z deklaracjami interfejsów (.h)
+│   └── ascon/
+│       ├── ascon.h
+│       ├── ascon_permutation.h
+│       ├── ascon_hash.h
+│       └── ascon_aead.h
+├── src/            # Implementacje modułów kryptograficznych (.c)
+│   ├── ascon_permutation.c
+│   ├── hash.c
+│   └── aead.c
+├── tests/          # Pakiet testów TDD i wbudowany framework Unity
+│   ├── unity/
+│   ├── vectors/
+│   ├── test_permutation.c
+│   ├── test_hash.c
+│   ├── test_aead.c
+│   └── test_runner.c
+├── Makefile        # Główny skrypt budowania projektu i uruchamiania testów
 ├── .gitignore      # Ignorowanie plików kompilacji i środowisk IDE
 └── README.md       # Informacje o projekcie
 ```
 
 ---
 
-## 3. Budowanie i Kompilacja (Wersja PC)
+## 4. Budowanie i Uruchamianie Testów
 
-Projekt kompilowany jest za pomocą narzędzia `make` i kompilatora `gcc` (standard C99):
+Kompilacja i uruchomienie zestawu testów na komputerze PC (Linux/GCC, standard C99):
 
 ```bash
-# Budowanie biblioteki z plików w katalogu src/
-make
-
-# Uruchomienie zestawu testów z katalogu tests/
+# Budowanie biblioteki i uruchomienie wszystkich testów
 make test
 
-# Usunięcie plików tymczasowych i katalogu build/
+# Uruchomienie wyłącznie testów permutacji Ascon-p
+make test-permutation   # alias: make test-perm
+
+# Uruchomienie wyłącznie testów funkcji skrótu Ascon-Hash256 / XOF128
+make test-hash
+
+# Uruchomienie wyłącznie testów uwierzytelnionego szyfrowania Ascon-AEAD128
+make test-aead
+
+# Budowanie samej biblioteki statycznej build/libascon.a
+make
+
+# Czyszczenie katalogu build/
 make clean
 ```
-
