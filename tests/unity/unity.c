@@ -3,6 +3,11 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
+#define ANSI_COLOR_RED     "\033[1;31m"
+#define ANSI_COLOR_GREEN   "\033[1;32m"
+#define ANSI_COLOR_YELLOW  "\033[1;33m"
+#define ANSI_COLOR_RESET   "\033[0m"
+
 unity_storage_t Unity;
 
 void UnityBegin(const char *filename) {
@@ -19,28 +24,28 @@ int UnityEnd(void) {
     printf("Wynik: %d uruchomionych testow, %d bledow, %d zignorowanych.\n",
            Unity.tests_run, Unity.test_failures, Unity.test_ignores);
     if (Unity.test_failures == 0) {
-        printf("STATUS: OK (Wszystkie testy zaliczone)\n");
+        printf(ANSI_COLOR_GREEN "STATUS: OK (Wszystkie testy zaliczone)" ANSI_COLOR_RESET "\n");
         return 0;
     } else {
-        printf("STATUS: FAIL (%d testow nie powiodlo sie!)\n", Unity.test_failures);
+        printf(ANSI_COLOR_RED "STATUS: FAIL (%d testow nie powiodlo sie!)" ANSI_COLOR_RESET "\n", Unity.test_failures);
         return 1;
     }
 }
 
 void UnityTestPass(void) {
-    printf("[ PASS ] %s\n", Unity.current_test_name);
+    printf(ANSI_COLOR_GREEN "[ PASS ]" ANSI_COLOR_RESET " %s\n", Unity.current_test_name);
 }
 
 void UnityTestIgnore(const char *msg, int line) {
     (void)line;
     Unity.test_ignores++;
-    printf("[ IGNORE ] %s: %s\n", Unity.current_test_name, msg);
+    printf(ANSI_COLOR_YELLOW "[ IGNORE ]" ANSI_COLOR_RESET " %s: %s\n", Unity.current_test_name, msg);
     longjmp(Unity.abort_frame, 1);
 }
 
 void UnityTestFail(const char *msg, int line) {
     Unity.test_failures++;
-    printf("[ FAIL ] %s:%d: w tescie '%s': %s\n",
+    printf(ANSI_COLOR_RED "[ FAIL ]" ANSI_COLOR_RESET " %s:%d: w tescie '%s': %s\n",
            __FILE__, line, Unity.current_test_name, msg);
     longjmp(Unity.abort_frame, 1);
 }

@@ -28,7 +28,7 @@ TEST_SRCS = $(wildcard $(TEST_DIR)/*.c) $(wildcard $(TEST_DIR)/unity/*.c)
 TEST_OBJS = $(patsubst $(TEST_DIR)/%.c, $(BUILD_DIR)/tests/%.o, $(TEST_SRCS))
 TARGET_TEST = $(BUILD_DIR)/test_runner
 
-.PHONY: all clean test test-permutation test-hash test-aead dirs help
+.PHONY: all clean test test-permutation test-perm test-hash test-aead dirs help
 
 # --- Cele glowne ---
 all: $(TARGET_LIB)
@@ -58,6 +58,8 @@ test: $(TARGET_TEST)
 
 test-permutation: $(TARGET_TEST)
 	@./$(TARGET_TEST) permutation
+
+test-perm: test-permutation
 
 test-hash: $(TARGET_TEST)
 	@./$(TARGET_TEST) hash

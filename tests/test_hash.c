@@ -62,7 +62,7 @@ static void test_hash256_short_message_nist(void) {
  */
 static void test_hash256_exact_single_block_boundary(void) {
     uint8_t digest[ASCON_HASH256_DIGEST_LEN];
-    uint8_t msg[8];
+    uint8_t msg[ASCON_HASH256_RATE];
     generate_kat_message(msg, sizeof(msg));
     
     static const uint8_t EXPECTED_DIGEST[ASCON_HASH256_DIGEST_LEN] = {
