@@ -31,9 +31,10 @@ Skład zespołu: **Wojciech Aleksander**, **Jakub Duliban**, **Hubert Krzyżak**
 - **Hubert Krzyżak**: Konfiguracja środowiska testowego. Weryfikacja implementacji testami pozytywnymi (wektory NIST), negatywnymi i brzegowymi.
 
 ### Etap 3: Wstępny port na IoT (Prezentacja) (Termin: 16–17 grudnia)
-- Przeniesienie i uruchomienie poprawnego kryptograficznie kodu na urządzeniu docelowym.
-- Przeprowadzenie pierwszej analizy wydajności.
-- Publiczna prezentacja częściowa: podstawy teoretyczne metody, testy oraz pierwsze wyniki z platformy IoT.
+- **Jakub Duliban**: Projekt PlatformIO dla ESP32. Uruchomienie Hash256 i XOF128 na płytce oraz pomiar czasu permutacji.
+- **Wojciech Aleksander**: Uruchomienie AEAD128 z wariantami na płytce. Demo szyfrowania przez UART i pomiar wydajności AEAD.
+- **Hubert Krzyżak**: Uruchomienie testów Unity na płytce i porównanie wyników z PC.
+- **Cały zespół**: Prezentacja częściowa (podstawy teoretyczne, testy, pierwsze wyniki z IoT), próba 14 grudnia.
 
 ### Etap 4: Optymalizacja i Finalizacja (Termin: 27–28 stycznia)
 - Przygotowanie ostatecznego demo na sprzęcie docelowym.
