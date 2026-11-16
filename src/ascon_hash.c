@@ -1,6 +1,6 @@
 /**
  * @file ascon_hash.c
- * @brief Implementacja Ascon-Hash256 (Algorithm 5), NIST SP 800-232.
+ * @brief Implementacja Ascon-Hash256 (Algorithm 5), Implementacja Ascon-XOF128 (Algorithm 6), NIST SP 800-232.
  *
  *
  * Budowa (konstrukcja gąbkowa, Figure 7):
@@ -84,7 +84,7 @@ static void sponge_squeeze(ascon_state_t *s, uint8_t *out, size_t out_len)
     ascon_store_bytes_le(out, s->x[0], out_len);
 }
 
-/* API                                                                       */
+/* API */
 
 int ascon_hash256(uint8_t digest[ASCON_HASH256_DIGEST_LEN],
                   const uint8_t *data,
@@ -99,6 +99,25 @@ int ascon_hash256(uint8_t digest[ASCON_HASH256_DIGEST_LEN],
     sponge_initialize(&s, ASCON_HASH256_IV);
     sponge_absorb(&s, data, data_len);
     sponge_squeeze(&s, digest, ASCON_HASH256_DIGEST_LEN);
+
+    ascon_state_clean(&s);
+    return 0;
+}
+
+int ascon_xof128(uint8_t *out,
+                 size_t out_len,
+                 const uint8_t *data,
+                 size_t data_len)
+{
+    ascon_state_t s;
+
+    if (out == NULL || out_len == 0 || (data == NULL && data_len != 0)) {
+        return -1;
+    }
+
+    sponge_initialize(&s, ASCON_XOF128_IV);
+    sponge_absorb(&s, data, data_len);
+    sponge_squeeze(&s, out, out_len);
 
     ascon_state_clean(&s);
     return 0;
