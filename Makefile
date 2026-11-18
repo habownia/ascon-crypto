@@ -19,6 +19,7 @@ INCLUDES = -Iinclude -Itests
 BUILD_DIR = build
 SRC_DIR = src
 TEST_DIR = tests
+EXAMPLE_DIR = examples
 
 SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/src/%.o, $(SRCS))
@@ -28,7 +29,10 @@ TEST_SRCS = $(wildcard $(TEST_DIR)/*.c) $(wildcard $(TEST_DIR)/unity/*.c)
 TEST_OBJS = $(patsubst $(TEST_DIR)/%.c, $(BUILD_DIR)/tests/%.o, $(TEST_SRCS))
 TARGET_TEST = $(BUILD_DIR)/test_runner
 
-.PHONY: all clean test test-permutation test-perm test-hash test-aead dirs help
+DEMO_SRC = $(EXAMPLE_DIR)/demo.c
+TARGET_DEMO = $(BUILD_DIR)/demo
+
+.PHONY: all clean test test-permutation test-perm test-hash test-aead demo dirs help
 
 # --- Cele glowne ---
 all: $(TARGET_LIB)
@@ -67,6 +71,14 @@ test-hash: $(TARGET_TEST)
 test-aead: $(TARGET_TEST)
 	@./$(TARGET_TEST) aead
 
+# --- Przyklad dzialania algorytmu ---
+$(TARGET_DEMO): $(DEMO_SRC) $(TARGET_LIB)
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEMO_SRC) $(TARGET_LIB) -o $@
+
+# Uruchomienie: make demo  lub  make demo MSG="dowolny tekst"
+demo: $(TARGET_DEMO)
+	@./$(TARGET_DEMO) $(if $(MSG),"$(MSG)")
+
 clean:
 	rm -rf $(BUILD_DIR)
 
@@ -77,5 +89,6 @@ help:
 	@echo "  make test-permutation - uruchamia testy permutacji Ascon-p"
 	@echo "  make test-hash        - uruchamia testy funkcji skrotu Ascon-Hash256 / XOF128"
 	@echo "  make test-aead        - uruchamia testy szyfrowania Ascon-AEAD128"
+	@echo "  make demo             - uruchamia przyklad dzialania (MSG=\"tekst\" - wlasna wiadomosc)"
 	@echo "  make clean            - usuwa katalog build/"
 	@echo "  make DEBUG=1 <cel>    - kompiluje z symbolami debugowania (-g3 -O0)"

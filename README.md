@@ -31,8 +31,8 @@ ascon-crypto/
 │       └── ascon_aead.h
 ├── src/            # Implementacje modułów kryptograficznych (.c)
 │   ├── ascon_permutation.c
-│   ├── hash.c
-│   └── aead.c
+│   ├── ascon_hash.c
+│   └── ascon_aead.c
 ├── tests/          # Pakiet testów TDD i wbudowany framework Unity
 │   ├── unity/
 │   ├── vectors/
