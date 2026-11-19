@@ -2,6 +2,7 @@
 
 Implementacja lekkiego algorytmu kryptograficznego **Ascon** zgodnie ze standardem **NIST SP 800-232** (*Lightweight Cryptography*), z przeznaczeniem na urządzenia klasy IoT (ESP8266 / ESP32).
 
+Projekt obejmuje pełną implementację uwierzytelnionego szyfrowania **Ascon-AEAD128**, funkcji skrótu **Ascon-Hash256**, funkcji o rozszerzalnym wyjściu **Ascon-XOF128** oraz rdzenia permutacji **Ascon-p**.
 
 ---
 
@@ -22,37 +23,57 @@ ascon-crypto/
 ├── docs/           # Założenia projektowe, harmonogram i specyfikacja NIST SP 800-232
 │   ├── NIST.SP.800-232.pdf
 │   ├── assumptions.md
-│   └── schedule.md
-├── include/        # Pliki nagłówkowe z deklaracjami interfejsów (.h)
+│   ├── schedule.md
+│   └── test_reference/     # Oficjalne wektory testowe NIST KAT (AEAD i Hash)
+├── examples/       # Programy demonstracyjne i przykłady użycia
+│   └── demo.c              # Interaktywne demo AEAD128 + Hash256 + symulacja ataków
+├── include/        # Publiczne pliki nagłówkowe z interfejsami biblioteki (.h)
 │   └── ascon/
 │       ├── ascon.h
 │       ├── ascon_permutation.h
 │       ├── ascon_hash.h
 │       └── ascon_aead.h
 ├── src/            # Implementacje modułów kryptograficznych (.c)
-│   ├── ascon_permutation.c
-│   ├── ascon_hash.c
-│   └── ascon_aead.c
-├── tests/          # Pakiet testów TDD i wbudowany framework Unity
-│   ├── unity/
-│   ├── vectors/
-│   ├── test_permutation.c
-│   ├── test_hash.c
-│   ├── test_aead.c
-│   └── test_runner.c
-├── Makefile        # Główny skrypt budowania projektu i uruchamiania testów
-├── .gitignore      # Ignorowanie plików kompilacji i środowisk IDE
-└── README.md       # Informacje o projekcie
+│   ├── ascon_permutation.c # Rdzeń permutacji Ascon-p, S-box, warstwa liniowa, stałe
+│   ├── ascon_hash.c        # Funkcje skrótu Ascon-Hash256 i Ascon-XOF128 (konstrukcja gąbki)
+│   └── ascon_aead.c        # Uwierzytelnione szyfrowanie Ascon-AEAD128
+├── tests/          # Pakiet testów jednostkowych TDD i wbudowany framework Unity
+│   ├── unity/              # Lekki framework testów jednostkowych Unity (C)
+│   ├── test_permutation.c  # Testy permutacji, S-boxa, stałych, paddingu i Little-Endian
+│   ├── test_hash.c         # Testy Ascon-Hash256 i Ascon-XOF128
+│   ├── test_aead.c         # Testy szyfrowania/deszyfrowania AEAD128 i testy integralności
+│   └── test_runner.c       # Główny runner testów z selekcją modułów
+├── Makefile        # Skrypt automatyzacji kompilacji, budowania biblioteki, testów i demo
+├── .gitignore      # Reguły ignorowania plików binarnych i tymczasowych
+└── README.md       # Główna dokumentacja projektu
 ```
+
+---
+
+## 3. Szybki Start: Uruchomienie Demo
+
+W projekcie przygotowano interaktywne demo prezentujące szyfrowanie AEAD128, weryfikację tagu, odporność na manipulacje danymi oraz funkcję skrótu Hash256 z efektem lawinowym:
+
+```bash
+# Uruchomienie demo z domyślną wiadomością
+make demo
+
+# Uruchomienie demo z własnym tekstem
+make demo MSG="<wiadomosc>"
+
+# Lub bezpośrednio przez plik binarny:
+./build/demo "<wiadomosc>"
+```
+
 
 ---
 
 ## 4. Budowanie i Uruchamianie Testów
 
-Kompilacja i uruchomienie zestawu testów na komputerze PC (Linux/GCC, standard C99):
+Projekt kompilowany jest za pomocą narzędzia `make` i kompilatora `gcc` (standard C99):
 
 ```bash
-# Budowanie biblioteki i uruchomienie wszystkich testów
+# Budowanie biblioteki i uruchomienie wszystkich testów TDD (26 testów)
 make test
 
 # Uruchomienie wyłącznie testów permutacji Ascon-p
@@ -64,7 +85,7 @@ make test-hash
 # Uruchomienie wyłącznie testów uwierzytelnionego szyfrowania Ascon-AEAD128
 make test-aead
 
-# Budowanie samej biblioteki statycznej build/libascon.a
+# Zbudowanie samej biblioteki statycznej build/libascon.a
 make
 
 # Czyszczenie katalogu build/
