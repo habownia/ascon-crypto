@@ -25,15 +25,17 @@ ascon-crypto/
 │   ├── assumptions.md
 │   ├── schedule.md
 │   └── test_reference/     # Oficjalne wektory testowe NIST KAT (AEAD i Hash)
-├── examples/       # Programy demonstracyjne i przykłady użycia
-│   └── demo.c              # Interaktywne demo AEAD128 + Hash256 + symulacja ataków
+├── examples/       # Programy demonstracyjne i przykłady użycia na PC
+│   └── demo.c              # Interaktywne demo AEAD128 + Hash256 + symulacja ataków (PC)
+├── firmware_esp8266/# Port firmware na mikrokontroler ESP8266 (Etap 3)
+│   └── main.cpp            # Demo IoT, pomiar cykli zegara CPU i komunikacja po UART
 ├── include/        # Publiczne pliki nagłówkowe z interfejsami biblioteki (.h)
 │   └── ascon/
 │       ├── ascon.h
 │       ├── ascon_permutation.h
 │       ├── ascon_hash.h
 │       └── ascon_aead.h
-├── src/            # Implementacje modułów kryptograficznych (.c)
+├── src/            # Implementacje modułów kryptograficznych (.c) - WSPÓLNE dla PC i ESP
 │   ├── ascon_permutation.c # Rdzeń permutacji Ascon-p, S-box, warstwa liniowa, stałe
 │   ├── ascon_hash.c        # Funkcje skrótu Ascon-Hash256 i Ascon-XOF128 (konstrukcja gąbki)
 │   └── ascon_aead.c        # Uwierzytelnione szyfrowanie Ascon-AEAD128
@@ -42,8 +44,9 @@ ascon-crypto/
 │   ├── test_permutation.c  # Testy permutacji, S-boxa, stałych, paddingu i Little-Endian
 │   ├── test_hash.c         # Testy Ascon-Hash256 i Ascon-XOF128
 │   ├── test_aead.c         # Testy szyfrowania/deszyfrowania AEAD128 i testy integralności
-│   └── test_runner.c       # Główny runner testów z selekcją modułów
-├── Makefile        # Skrypt automatyzacji kompilacji, budowania biblioteki, testów i demo
+│   └── test_runner.c       # Główny runner testów (obsługuje PC oraz ESP przez #ifdef ARDUINO)
+├── Makefile        # Skrypt automatyzacji kompilacji na PC oraz skróty PlatformIO
+├── platformio.ini  # Konfiguracja środowiska kompilacji i testów na ESP8266 / ESP32
 ├── .gitignore      # Reguły ignorowania plików binarnych i tymczasowych
 └── README.md       # Główna dokumentacja projektu
 ```
@@ -90,4 +93,29 @@ make
 
 # Czyszczenie katalogu build/
 make clean
+```
+
+---
+
+## 5. Port na Mikrokontrolery IoT (ESP8266 / ESP32)
+
+Wspólny kod rdzenia z katalogów `src/` oraz `include/` jest w 100% przenośny (C99, Little-Endian, brak alokacji dynamicznej `malloc`). Został skonfigurowany do uruchomienia na mikrokontrolerach ESP8266 oraz ESP32 za pośrednictwem **PlatformIO**.
+
+* `platformio.ini` — konfiguracja środowiska kompilacji i wgrywania firmware na ESP8266/ESP32.
+* `firmware_esp8266/main.cpp` — program demonstracyjny z pomiarem cykli zegara CPU (`ESP.getCycleCount()`), szyfrowaniem przez UART (115200 baud) oraz weryfikacją tagu i integralności.
+* `tests/test_runner.c` — posiada wsparcie dla Arduino (`#ifdef ARDUINO`), co pozwala uruchomić ten sam pakiet 26 testów jednostkowych Unity bezpośrednio na podłączonym mikrokontrolerze!
+
+### Polecenia PlatformIO:
+```bash
+# Kompilacja firmware dla ESP8266
+pio run                 # lub: make pio-build
+
+# Wgranie firmware na płytkę przez USB
+pio run -t upload       # lub: make pio-upload
+
+# Monitor portu szeregowego UART (115200 baud)
+pio device monitor      # lub: make pio-monitor
+
+# Uruchomienie testów jednostkowych Unity na podłączonym mikrokontrolerze
+pio test                # lub: make pio-test
 ```

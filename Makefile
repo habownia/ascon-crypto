@@ -32,7 +32,7 @@ TARGET_TEST = $(BUILD_DIR)/test_runner
 DEMO_SRC = $(EXAMPLE_DIR)/demo.c
 TARGET_DEMO = $(BUILD_DIR)/demo
 
-.PHONY: all clean test test-permutation test-perm test-hash test-aead demo dirs help
+.PHONY: all clean test test-permutation test-perm test-hash test-aead demo dirs help pio-build pio-upload pio-test pio-monitor
 
 # --- Cele glowne ---
 all: $(TARGET_LIB)
@@ -71,13 +71,26 @@ test-hash: $(TARGET_TEST)
 test-aead: $(TARGET_TEST)
 	@./$(TARGET_TEST) aead
 
-# --- Przyklad dzialania algorytmu ---
+# --- Przyklad dzialania algorytmu na PC ---
 $(TARGET_DEMO): $(DEMO_SRC) $(TARGET_LIB)
 	$(CC) $(CFLAGS) $(INCLUDES) $(DEMO_SRC) $(TARGET_LIB) -o $@
 
 # Uruchomienie: make demo  lub  make demo MSG="dowolny tekst"
 demo: $(TARGET_DEMO)
 	@./$(TARGET_DEMO) $(if $(MSG),"$(MSG)")
+
+# --- Narzedzia PlatformIO (ESP8266 / ESP32) ---
+pio-build:
+	pio run
+
+pio-upload:
+	pio run --target upload
+
+pio-test:
+	pio test
+
+pio-monitor:
+	pio device monitor
 
 clean:
 	rm -rf $(BUILD_DIR)
@@ -90,5 +103,9 @@ help:
 	@echo "  make test-hash        - uruchamia testy funkcji skrotu Ascon-Hash256 / XOF128"
 	@echo "  make test-aead        - uruchamia testy szyfrowania Ascon-AEAD128"
 	@echo "  make demo             - uruchamia przyklad dzialania (MSG=\"tekst\" - wlasna wiadomosc)"
+	@echo "  make pio-build        - kompiluje firmware ESP8266/ESP32 przez PlatformIO"
+	@echo "  make pio-upload       - wgrywa firmware na plytke ESP przez USB"
+	@echo "  make pio-test         - uruchamia testy jednostkowe na podlaczonej plytce ESP"
+	@echo "  make pio-monitor      - otwiera monitor portu szeregowego UART (115200)"
 	@echo "  make clean            - usuwa katalog build/"
 	@echo "  make DEBUG=1 <cel>    - kompiluje z symbolami debugowania (-g3 -O0)"

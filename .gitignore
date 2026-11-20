@@ -7,6 +7,11 @@ bin/
 *.dylib
 *.out
 
+# PlatformIO
+.pio/
+.pioenvs/
+.piolibdeps/
+
 # Editor and IDE files
 .vscode/
 .idea/
